@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="search-header">
+        <form method="get">
+            <input name="q" type="text" placeholder="検索ワードを入力" />
+            <input type="submit" value="検索" />
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="search-message">
+        @Html.Raw(ViewData["Message"])
+    </div>
+
+    <div class="search-result">
+        <table>
+            <thead>
+                <tr>
+                    <th width="30">Id</th>
+                    <th width="210">Name</th>
+                    <th>Category</th>
+                    <th>SubCategory</th>
+                    <th>Color</th>
+                    <th>List Price $</th>
+                    <th width="140">Sell Start Date</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach(var p in Model)
+                {
+                    <tr>
+                        <td>@p.ProductId</td>
+                        <td>@p.ProductName</td>
+                        <td>@p.Category</td>
+                        <td>@p.SubCategory</td>
+                        <td>@p.Color</td>
+                        <td>@p.ListPrice</td>
+                        <td>@p.SellStartDate</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

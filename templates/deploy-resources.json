@@ -46,7 +46,7 @@
         },
         "bastionHostName": {
             "type": "string",
-            "defaultValue": "bas-1",
+            "defaultValue": "bas1",
             "metadata": {
                 "description": "Azure Bastion の名前"
             }
