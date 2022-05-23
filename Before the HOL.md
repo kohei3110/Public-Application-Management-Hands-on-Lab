@@ -49,6 +49,12 @@ June 2022
 
 <br />
 
+### 展開後のリソース
+
+<img src="images/Azure-resources.png" />
+
+<br />
+
 ## リソースの設定
 
 ※ **リポジトリを自身の GitHub アカウントに Fork ** してから作業を行ってください。
