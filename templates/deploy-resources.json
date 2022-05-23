@@ -1,0 +1,303 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkName": {
+            "type": "string",
+            "defaultValue": "vnet-1",
+            "metadata": {
+                "description": "仮想ネットワークの名前"
+            }
+        },
+        "addressPrefix": {
+            "type": "string",
+            "defaultValue": "10.1.0.0/16",
+            "metadata": {
+                "description": "IPv4 アドレス空間"
+            }
+        },
+        "subnetName1":{
+            "type": "string",
+            "defaultValue": "Subnet-1",
+            "metadata": {
+                "description": "サブネットの名前 (1)"
+            }
+        },
+        "subnetPrefix1": {
+            "type": "string",
+            "defaultValue": "10.1.1.0/24",
+            "metadata": {
+                "description": "サブネット アドレス範囲 (1)"
+            }
+        },
+        "subnetName2":{
+            "type": "string",
+            "defaultValue": "Subnet-2",
+            "metadata": {
+                "description": "サブネットの名前 (2)"
+            }
+        },
+        "subnetPrefix2": {
+            "type": "string",
+            "defaultValue": "10.1.2.0/24",
+            "metadata": {
+                "description": "サブネット アドレス範囲 (2)"
+            }
+        },
+        "bastionHostName": {
+            "type": "string",
+            "defaultValue": "bas1",
+            "metadata": {
+                "description": "Azure Bastion の名前"
+            }
+        },
+        "virtualMachineName": {
+            "type": "string",
+            "defaultValue": "vm1",
+            "metadata": {
+                "description": "仮想マシンの名前"
+            }
+        },
+        "adminUserName": {
+            "type": "string",
+            "defaultValue": "AzureUser",
+            "metadata": {
+                "description": "仮想マシンのローカル管理者"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "仮想マシンのローカル管理者のパスワード"
+            }
+        },
+        "webAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "Web アプリの名前"
+            }
+        },
+        "cosmosAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Cosmos DB アカウントの名前"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "planName": "[concat('plan-', parameters('webAppName'))]",
+        "bastionPip": "[concat('pip-', parameters('bastionHostName'))]",
+        "networkInterface": "[concat('nic-', parameters('virtualMachineName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('virtualNetworkName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "location": "[variables('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnetName1')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix1')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnetName2')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix2')]"
+                        }
+                    },
+                    {
+                        "name": "AzureBastionSubnet",
+                        "properties": {
+                            "addressPrefix": "10.1.10.0/24"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2019-02-01",
+            "name": "[variables('bastionPip')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static"
+            }
+        },
+        {
+            "type": "Microsoft.Network/bastionHosts",
+            "apiVersion": "2019-06-01",
+            "name": "[parameters('bastionHostName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('virtualNetworkName'), 'AzureBastionSubnet')]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionPip'))]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('networkInterface')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetWorks/subnets', parameters('virtualNetworkName'), parameters('subnetName1'))]"
+                            },
+                            "privateIPAddress": "Dynamic"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('virtualMachineName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_B1ms"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "name": "[concat(parameters('virtualMachineName'), '-osDisk')]",
+                        "caching": "None",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter-smalldisk",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('networkInterface'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachineName')]",
+                    "adminUsername": "[parameters('adminUserName')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVMAgent": true
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterface'))]"
+            ]
+        },
+        {
+            "name": "[variables('planName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-12-01",
+            "location": "[variables('location')]",
+            "kind": "",
+            "sku": {
+                "name": "P1V3",
+                "tier": "PremiumV3"
+            },
+            "properties": {
+                "name": "[variables('planName')]",
+                "workerSize": "3",
+                "workerSizeId": "3",
+                "numberOfWorkers": 1,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "name": "[parameters('webAppName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2020-12-01",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('planName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('webAppName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('planName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "CosmosDbEndpoint",
+                            "value": ""
+                        },
+                        {
+                            "name": "AuthorizationKey",
+                            "value": ""
+                        }
+                    ],
+                    "metadata": [
+                        {
+                            "name": "CURRENT_STACK",
+                            "value": "dotnet"
+                        }
+                    ],
+                    "minTlsVersion": "1.2",
+                    "netFrameworkVersion": "v6.0"
+                }
+            }
+        },
+        {
+            "name": "[parameters('cosmosAccountName')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2021-05-15",
+            "location": "[variables('location')]",
+            "tags": {},
+            "kind": "GlobalDocumentDB",
+            "properties": {
+                "locations": [
+                    {
+                        "locationName": "[variables('location')]",
+                        "failoverPriority": 0
+                    }
+                ],
+                "databaseAccountOfferType": "Standard",
+                "capabilities": []
+            }
+        }
+    ],
+    "outputs": {}
+}
