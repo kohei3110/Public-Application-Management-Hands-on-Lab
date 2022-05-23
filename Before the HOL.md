@@ -49,6 +49,145 @@ June 2022
 
 <br />
 
-## 環境設定
+## リソースの設定
 
-### Cosmos DB へのデータコピー
+※ **リポジトリを自身の GitHub アカウントに Fork ** してから作業を行ってください。
+
+※  [Postman](https://www.postman.com/downloads/) を使用しますので、デスクトップ環境にインストールください。
+
+### Cosmos DB
+
+- データベースの作成とデータのコピー
+
+  - Postman を起動し、新しいリクエストを作成
+
+    - リクエスト メソッド: **POST**
+
+    - API URL: **https://beforethehol4.azurewebsites.net/api/BulkCopy**
+
+  - **Headers** タブへ移動しヘッダーを追加
+
+    - KEY: **x-functions-key**
+
+    - VALUE: キーは発行しますので hiroyay@microsoft.com まで連絡ください。
+
+      <img src="images/copy-data-postman-1.png" />
+
+  - **Body** タブへ移動し **Raw** を選択
+
+  - POST するデータを記述
+
+    <img src="images/copy-data-postman-2.png" />
+
+    ```
+    {
+        "URI": "<YOUR Cosmos DB Account>",
+        "Key": "<Authorization Key>"
+    }
+    ```
+
+    ※ URI, Key には作成した Cosmos DB の URI とプライマリ キーを指定
+
+    <img src="images/get-cosmos-key.png" />
+
+  - **Send** をクリックし実行
+
+    ※ 正常に終了すると Cosmos DB へ item が追加された応答を受信
+
+    <img src="images/copy-data-postman-3.png" />
+
+- データの確認
+
+  - Azure ポータルで Cosmos DB アカウントを表示
+
+  - データ エクスプローラーを選択し items を表示
+
+    - Database: **AdventureWorks**
+
+    - Container: **Product**
+
+      <img src="images/cosmos-data-explorer-1.png" />
+
+  - items 数をカウントするクエリを実行
+
+    ```
+    SELECT COUNT(1) as 'COUNT' FROM c
+    ```
+
+    ※ アイテム数が 294 であることを確認
+
+      <img src="images/cosmos-data-explorer-2.png" />
+
+<br />
+
+### Web アプリケーションの展開
+
+  - WebApps の **概要** ページで **発行プロファイルの取得** をクリック
+
+  - ダウンロードしたファイルを保存
+
+  - GitHub リポジトリの **Settings** を表示、**Actions secrets** へ新しいシークレットを作成
+
+    - シークレット名: **AZURE_WEBAPP_PUBLISH_PROFILE**
+
+    - 値: ダウンロードした発行プロファイルの内容を貼り付け
+
+      <img src="images/add-new-secret.png" />
+ 
+  - <a href="../../actions">GitHub Actions</a> へ移動
+
+  - **I understand my workflows, go ahead and enable them** をクリック
+
+    <img src="images/allow-workflow-01.png" />
+
+    ※フォークされたリポジトリで無効にされたワークフローを許可
+
+    ※メッセージが表示されない場合は、GitHub へサインインが必要
+
+  - ワークフローを実行し、アプリケーションを展開
+
+    - **Run workflow** をクリックし、展開先の Web Apps の名前をパラメータへ入力
+
+    - **Run workflow** をクリック
+
+    <img src="images/run-github-actions.png" />
+
+<br />
+
+- Web アプリケーションの構成
+
+  - WebApps の **構成** ページでアプリケーション設定の値を入力
+
+    - 名前: **CosmosDbEndpoint** / 値: Cosmos DB アカウントの URI
+
+    - 名前: **AuthorizationKey** / 値: Cosmos DB アカウントのプライマリ キー
+
+    展開時に既に環境変数として追加済みのため編集で値だけ入力
+
+  - **保存** をクリックし、アプリケーションを再起動
+
+<br />
+
+- アプリケーションの動作確認
+
+  - App Service の **概要** ページの **URL** をクリック
+
+  - 新しいタブでアプリケーションが表示
+
+    <img src="images/web-app-1.png" />
+
+  - Name 列の項目に含まれている文字列を検索ワードに指定し検索を実行
+
+    <img src="images/web-app-2.png" />
+
+    ※ 大文字、小文字を判別するため注意
+
+  - 検索ワードに以下を指定し、再度検索を実行
+
+    ```
+    ' --<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+    ```
+
+    <img src="images/web-app-3.png" />
+
+    ※ XSS 攻撃が成功し、他サイトの情報が表示されることを確認
