@@ -44,33 +44,6 @@
                 "description": "サブネット アドレス範囲 (2)"
             }
         },
-        "bastionHostName": {
-            "type": "string",
-            "defaultValue": "bas1",
-            "metadata": {
-                "description": "Azure Bastion の名前"
-            }
-        },
-        "virtualMachineName": {
-            "type": "string",
-            "defaultValue": "vm1",
-            "metadata": {
-                "description": "仮想マシンの名前"
-            }
-        },
-        "adminUserName": {
-            "type": "string",
-            "defaultValue": "AzureUser",
-            "metadata": {
-                "description": "仮想マシンのローカル管理者"
-            }
-        },
-        "adminPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "仮想マシンのローカル管理者のパスワード"
-            }
-        },
         "webAppName": {
             "type": "string",
             "metadata": {
@@ -94,9 +67,7 @@
     "functions": [],
     "variables": {
         "location": "[resourceGroup().location]",
-        "planName": "[concat('plan-', parameters('webAppName'))]",
-        "bastionPip": "[concat('pip-', parameters('bastionHostName'))]",
-        "networkInterface": "[concat('nic-', parameters('virtualMachineName'))]"
+        "planName": "[concat('plan-', parameters('webAppName'))]"
     },
     "resources": [
         {
@@ -131,110 +102,6 @@
                     }
                 ]
             }
-        },
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2019-02-01",
-            "name": "[variables('bastionPip')]",
-            "location": "[variables('location')]",
-            "sku": {
-                "name": "Standard"
-            },
-            "properties": {
-                "publicIPAllocationMethod": "Static"
-            }
-        },
-        {
-            "type": "Microsoft.Network/bastionHosts",
-            "apiVersion": "2019-06-01",
-            "name": "[parameters('bastionHostName')]",
-            "location": "[variables('location')]",
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig",
-                        "properties": {
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',parameters('virtualNetworkName'), 'AzureBastionSubnet')]"
-                            },
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionPip'))]"
-                            }
-                        }
-                    }
-                ]
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2020-11-01",
-            "name": "[variables('networkInterface')]",
-            "location": "[variables('location')]",
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetWorks/subnets', parameters('virtualNetworkName'), parameters('subnetName1'))]"
-                            },
-                            "privateIPAddress": "Dynamic"
-                        }
-                    }
-                ]
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-03-01",
-            "name": "[parameters('virtualMachineName')]",
-            "location": "[variables('location')]",
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_B1ms"
-                },
-                "storageProfile": {
-                    "osDisk": {
-                        "createOption": "FromImage",
-                        "name": "[concat(parameters('virtualMachineName'), '-osDisk')]",
-                        "caching": "None",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        }
-                    },
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2022-datacenter-smalldisk",
-                        "version": "latest"
-                    }
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('networkInterface'))]"
-                        }
-                    ]
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachineName')]",
-                    "adminUsername": "[parameters('adminUserName')]",
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "enableAutomaticUpdates": true,
-                        "provisionVMAgent": true
-                    }
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterface'))]"
-            ]
         },
         {
             "name": "[variables('planName')]",
