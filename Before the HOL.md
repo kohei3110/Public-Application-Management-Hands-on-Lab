@@ -41,6 +41,8 @@ June 2022
 
 - **cosmosAccountName**: Cosmos DB アカウント（一意に識別できる名前 / 長さ：3 ～ 44 / 有効な文字：小文字、数字、およびハイフン）
 
+- **logAnalyticsWorkspace**: Log Analytics ワークスペース名（長さ：4 ～ 63 / 有効な文字：英数字、およびハイフン）
+
 <br />
 
 ※事前にリソース グループの作成が必要
