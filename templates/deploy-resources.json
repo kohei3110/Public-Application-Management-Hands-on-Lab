@@ -110,8 +110,8 @@
             "location": "[variables('location')]",
             "kind": "",
             "sku": {
-                "name": "P1V3",
-                "tier": "PremiumV3"
+                "name": "S1",
+                "tier": "Standard"
             },
             "properties": {
                 "name": "[variables('planName')]",
