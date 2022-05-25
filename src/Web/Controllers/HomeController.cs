@@ -21,6 +21,10 @@ public class HomeController : Controller
         string endpoint = _configuration.GetValue<string>("CosmosDbEndpoint");
         string key = _configuration.GetValue<string>("AuthorizationKey");
 
+        CosmosClientOptions options = new CosmosClientOptions();
+        options.ApplicationName = "App-Workshop";
+        options.ApplicationPreferredRegions = new List<string> { Regions.EastUS, Regions.WestUS3 };
+
         CosmosClient cosmosClient = new CosmosClient(endpoint, key);
         Container container = cosmosClient.GetContainer("AdventureWorks", "Products");
 
