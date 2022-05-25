@@ -29,17 +29,11 @@ June 2022
 
 - **subnetPrefix2**: サブネット アドレス範囲 (2)
 
-- **bastionHostName**: Azure Bastion の名前（長さ：1 ～ 80  / 有効な文字：英数字、アンダースコア、ピリオド、およびハイフン）
-
-- **virtualMachineName**: 仮想マシンの名前（長さ：1 ～ 15（Windows）/ スペース、制御文字等は使用不可）
-
-- **adminUserName**: 仮想マシンのローカル管理者（長さ：1 ～ 20 / 特殊文字 \/""[]:|<>+=;,?*@& の使用不可）
-
-- **adminPassword**: 仮想マシンのローカル管理者のパスワード（長さ：12 ～ 123 / 大文字、小文字、数字、特殊文字のうち３つを含む）
-
 - **webAppName**: Web アプリの名前（一意に識別できる名前 / 長さ：2 ～ 60  / 有効な文字：英数字とハイフン）
 
 - **cosmosAccountName**: Cosmos DB アカウント（一意に識別できる名前 / 長さ：3 ～ 44 / 有効な文字：小文字、数字、およびハイフン）
+
+- **logAnalyticsWorkspace**: Log Analytics ワークスペース名（長さ：4 ～ 63 / 有効な文字：英数字、およびハイフン）
 
 <br />
 
@@ -190,10 +184,24 @@ June 2022
 
   - 検索ワードに以下を指定し、再度検索を実行
 
-    ```
-    ' --<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
-    ```
+    - JavaScript を埋め込み
 
-    <img src="images/web-app-3.png" />
+      ```
+      ' --<script>alert('1');</script>
+      ```
 
-    ※ XSS 攻撃が成功し、他サイトの情報が表示されることを確認
+      <img src="images/web-app-4.png" />
+
+      <br />
+
+    - 他サイトの情報を埋め込み
+
+      ```
+      ' --<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+      ```
+
+      <img src="images/web-app-3.png" />
+
+      <br />
+
+    ※ XSS 攻撃が成功し、JavaScript の実行や他サイトの情報が表示されることを確認
