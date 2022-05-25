@@ -184,10 +184,24 @@ June 2022
 
   - 検索ワードに以下を指定し、再度検索を実行
 
-    ```
-    ' --<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
-    ```
+    - JavaScript を埋め込み
 
-    <img src="images/web-app-3.png" />
+      ```
+      ' --<script>alert('1');</script>
+      ```
 
-    ※ XSS 攻撃が成功し、他サイトの情報が表示されることを確認
+      <img src="images/web-app-4.png" />
+
+      <br />
+
+    - 他サイトの情報を埋め込み
+
+      ```
+      ' --<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+      ```
+
+      <img src="images/web-app-3.png" />
+
+      <br />
+
+    ※ XSS 攻撃が成功し、JavaScript の実行や他サイトの情報が表示されることを確認
