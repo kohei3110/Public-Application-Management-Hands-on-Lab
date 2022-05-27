@@ -125,12 +125,10 @@ June 2022
   - Azure ポータルから Cloud Shell を起動しサービス プリンシパルを作成
 
     ```
-    az ad sp create-for-rbac --name "<service principal name>" --role contributor --scopes <resource group id> --sdk-auth
+    az ad sp create-for-rbac --name "<service principal name>" --role contributor --sdk-auth
     ```
 
-    ※ リソース グループに対する共同作成者の権限を付与
-
-    ※ リソース ID はリソース グループのプロパティから取得
+    ※ サブスクリプションに対する共同作成者の権限を付与
 
   - 上記 az ad sp create-for-rbac コマンドを実行後、ロール割り当て資格情報を含む JSON オブジェクトが出力
 

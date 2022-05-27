@@ -23,9 +23,9 @@ public class HomeController : Controller
 
         CosmosClientOptions options = new CosmosClientOptions();
         options.ApplicationName = "App-Workshop";
-        options.ApplicationPreferredRegions = new List<string> { Regions.EastUS, Regions.WestUS3 };
+        options.ApplicationRegion = Regions.WestUS3;
 
-        CosmosClient cosmosClient = new CosmosClient(endpoint, key);
+        CosmosClient cosmosClient = new CosmosClient(endpoint, key, options);
         Container container = cosmosClient.GetContainer("AdventureWorks", "Products");
 
         var queryString = "SELECT c.productId, c.productName, c.color, c.listPrice, c.category, c.sellStartDate FROM c";
