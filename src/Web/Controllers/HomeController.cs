@@ -21,7 +21,11 @@ public class HomeController : Controller
         string endpoint = _configuration.GetValue<string>("CosmosDbEndpoint");
         string key = _configuration.GetValue<string>("AuthorizationKey");
 
-        CosmosClient cosmosClient = new CosmosClient(endpoint, key);
+        CosmosClientOptions options = new CosmosClientOptions();
+        options.ApplicationName = "App-Workshop";
+        options.ApplicationRegion = Regions.WestUS3;
+
+        CosmosClient cosmosClient = new CosmosClient(endpoint, key, options);
         Container container = cosmosClient.GetContainer("AdventureWorks", "Products");
 
         var queryString = "SELECT c.productId, c.productName, c.color, c.listPrice, c.category, c.sellStartDate FROM c";
