@@ -23,7 +23,7 @@ public class HomeController : Controller
 
         CosmosClientOptions options = new CosmosClientOptions();
         options.ApplicationName = "App-Workshop";
-        options.ApplicationRegion = Regions.WestUS3;
+        options.ApplicationPreferredRegions = new List<string> { Regions.EastUS, Regions.WestUS3 };
 
         CosmosClient cosmosClient = new CosmosClient(endpoint, key, options);
         Container container = cosmosClient.GetContainer("AdventureWorks", "Products");
