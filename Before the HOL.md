@@ -122,15 +122,33 @@ June 2022
 
 ### Web アプリケーションの展開
 
-  - WebApps の **概要** ページで **発行プロファイルの取得** をクリック
+  - Azure ポータルから Cloud Shell を起動しサービス プリンシパルを作成
 
-  - ダウンロードしたファイルを保存
+    ```
+    az ad sp create-for-rbac --name "<service principal name>" --role contributor --sdk-auth
+    ```
+
+    ※ サブスクリプションに対する共同作成者の権限を付与
+
+  - 上記 az ad sp create-for-rbac コマンドを実行後、ロール割り当て資格情報を含む JSON オブジェクトが出力
+
+    ```
+    {
+      "cliendId": "<GUID>",
+      "clientSecret": "<GUID>",
+      "subscriptionId": "<GUID>",
+      "tenantId": "<GUID>"
+      (...)
+    }
+    ```
+
+  - 出力された JSON オブジェクトをコピー
 
   - GitHub リポジトリの **Settings** を表示、**Actions secrets** へ新しいシークレットを作成
 
-    - シークレット名: **AZURE_WEBAPP_PUBLISH_PROFILE**
+    - シークレット名: **AZURE_CREDENTIALS**
 
-    - 値: ダウンロードした発行プロファイルの内容を貼り付け
+    - 値: コピーした JSON オブジェクトを貼り付け
 
       <img src="images/add-new-secret.png" />
  
