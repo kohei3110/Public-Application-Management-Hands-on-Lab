@@ -116,8 +116,6 @@ June 2022
 
     ※ アイテム数が 294 であることを確認
 
-      <img src="images/cosmos-data-explorer-2.png" />
-
 <br />
 
 ### Web アプリケーションの展開
