@@ -91,6 +91,8 @@ June 2022
 
 ## Exercise 1: Azure リソースの保護
 
+<img src="images/exercise1.png" />
+
 ### Task 1: Microsoft Defender for Cloud の有効化
 
 - Azure ポータルのトップ画面から **ツール** に表示される **Microsoft Defender for Cloud** をクリック
@@ -179,6 +181,8 @@ June 2022
 <br />
 
 ## Exercise 2: Cosmos DB アカウントへのアクセス制限
+
+<img src="images/exercise2.png" />
 
 ### Task 1: Cosmos DB アカウントへの Private Link の構成
 
@@ -311,6 +315,8 @@ June 2022
 <br />
 
 ## Exercise 3: アプリケーションの保護
+
+<img src="images/exercise3.png" />
 
 ### Task 1: Front Door の作成・構成
 
@@ -592,6 +598,8 @@ June 2022
 <br />
 
 ## Exercise 4: マルチリージョン展開による高可用性構成
+
+<img src="images/exercise4.png" />
 
 ### Task 1: リソースの作成
 
