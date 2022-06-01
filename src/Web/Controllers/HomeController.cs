@@ -21,11 +21,30 @@ public class HomeController : Controller
         string endpoint = _configuration.GetValue<string>("CosmosDbEndpoint");
         string key = _configuration.GetValue<string>("AuthorizationKey");
 
-        CosmosClientOptions options = new CosmosClientOptions();
-        options.ApplicationName = "App-Workshop";
-        options.ApplicationPreferredRegions = new List<string> { Regions.EastUS, Regions.WestUS3 };
+        CosmosClient cosmosClient;
+        if (!string.IsNullOrEmpty(_configuration.GetValue<string>("ServerRegion")))
+        {
+            var serverRegion = _configuration.GetValue<string>("ServerRegion");
 
-        CosmosClient cosmosClient = new CosmosClient(endpoint, key, options);
+            CosmosClientOptions options = new CosmosClientOptions();
+            options.ApplicationName = "App-Workshop";
+
+            if (serverRegion == "WestUS3")
+            {
+                options.ApplicationRegion = Regions.WestUS3;
+            }
+            else if (serverRegion == "EastUS")
+            {
+                options.ApplicationRegion = Regions.EastUS;
+            }
+
+            cosmosClient = new CosmosClient(endpoint, key, options);
+        }
+        else
+        {
+            cosmosClient = new CosmosClient(endpoint, key);
+        }
+
         Container container = cosmosClient.GetContainer("AdventureWorks", "Products");
 
         var queryString = "SELECT c.productId, c.productName, c.color, c.listPrice, c.category, c.sellStartDate FROM c";
