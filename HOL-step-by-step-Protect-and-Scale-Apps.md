@@ -27,17 +27,19 @@ June 2022
 
   - [Task 2: ログの確認](#task-2-ログの確認)
 
-- [Exercise 4: 災害対策構成](#exercise-4-災害対策構成)
+- [Exercise 4: マルチリージョン展開による高可用性構成](#exercise-4-マルチリージョン展開による高可用性構成)
 
   - [Task 1: リソースの作成](#task-1-リソースの作成)
 
-  - [Task 2: Cosmos DB グローバル分散](#task-2-cosmos-db-グローバル分散)
+  - [Task 2: VNet Peering の構成](#task-2-vnet-peering-の構成)
 
-  - [Task 3: Cosmos DB Private Endpoint の追加](#task-3-cosmos-db-private-endpoint-の追加)
+  - [Task 3: Cosmos DB グローバル分散](#task-3-cosmos-db-グローバル分散)
 
-  - [Task 4: App Service の作成・構成](#task-4-app-service-の作成・構成)
+  - [Task 4: Cosmos DB Private Endpoint の追加](#task-4-cosmos-db-private-endpoint-の追加)
 
-  - [Task 5: Front Door 配信元グループへの App Service の追加](#task-5-front-door-配信元グループへの-app-service-の追加)
+  - [Task 5: App Service の作成・構成](#task-5-app-service-の構成)
+
+  - [Task 6: Front Door 配信元グループへの App Service の追加](#task-6-front-door-配信元グループへの-app-service-の追加)
 
 <br />
 
@@ -312,6 +314,8 @@ June 2022
 
 ### Task 1: Front Door の作成・構成
 
+**Front Door の作成**
+
 - Azure ポータルのトップ画面から **＋ リソースの作成** をクリック
 
 - テキストボックスに **front door** と入力
@@ -430,6 +434,8 @@ June 2022
 
 <br />
 
+**WAF ポリシーのモード変更**
+
 - 作成した Front Door の管理ブレードへ移動
 
 - **概要** ページのポリシー名をクリック
@@ -445,6 +451,8 @@ June 2022
   ※ WAF の動作を規則に合致した侵入や攻撃と見なされるリクエストをブロックするよう変更
 
 <br />
+
+**Front Door の診断設定**
 
 - Front Door の管理ブレードで **診断設定** を選択
 
@@ -468,11 +476,49 @@ June 2022
 
 <br />
 
+**App Service のプライベート エンドポイントの承認**
+
+- App Service の管理ブレードから **ネットワーク** を選択
+
+- **プライベート エンドポイント** をクリック
+
+  <img src="images/app-private-endpoint-1.png" />
+
+- Front Door の配信元グループへの追加時に設定したプライベート エンドポイントが作成されているため、選択し **承認** をクリック
+
+  <img src="images/app-private-endpoint-2.png" />
+
+- 確認のメッセージが表示されるため **はい** をクリック
+
+  <img src="images/app-private-endpoint-3.png" />
+
+- 接続状態が Approved に変更されることを確認
+
+  <img src="images/app-private-endpoint-4.png" />
+
+- 受信トラフィックのプライベート エンドポイント、送信トラフィックの VNET 統合がオンになっていることを確認
+
+  <img src="images/app-private-endpoint-5.png" />
+
+- 管理ブレードの概要タブから URL をクリック
+
+  <img src="images/app-service-summary.png" />
+
+- プライベート エンドポイントの有効化によりインターネットからのアクセスが拒否されることを確認
+
+  <img src="images/error-403-forbidden.png" />
+
+<br />
+
+**アプリケーションの動作確認**
+
 - Front Door の管理ブレードで **概要** を表示
 
 - Endpoint hostname をコピーし、新しいタブでアプリケーションにアクセス
 
   <img src="images/confirm-web-app-1.png" />
+
+  ※ Front Door 経由ではインターネットでアプリケーションへアクセス可であることを確認
 
 - 検索ワードに SQL インジェクションや XSS 攻撃を行うコードを入力し検索を実行
 
@@ -545,7 +591,7 @@ June 2022
 
 <br />
 
-## Exercise 4: 災害対策構成
+## Exercise 4: マルチリージョン展開による高可用性構成
 
 ### Task 1: リソースの作成
 
@@ -555,28 +601,453 @@ June 2022
 
 - Azure ポータルのトップ画面で **＋ リソースの作成** をクリック
 
+- 検索ワードに **resource group** と入力し、表示される候補より **リソース グループ** を選択
+
+  <img src="images/create-resource-group-1.png" />
+
+- **作成** をクリック
+
+  <img src="images/create-resource-group-2.png" />
+
+- 必要項目を設定し **確認および作成** をクリック
+
+  - **サブスクリプション**: ワークショップで使用しているサブスクリプション
+
+  - **リソース グループ**: 任意（rg-worksohp-xx など）
+
+  - **リージョン**: (US) West US 3 を選択
+
+    <img src="images/create-resource-group-3.png" />
+
+- **作成** をクリックし、指定した内容でリソース グループを追加
+
+  <img src="images/create-resource-group-4.png" />
+
 <br />
 
 **仮想ネットワークの作成**
+
+- Azure ポータルのトップ画面で **＋ リソースの作成** をクリック
+
+- 検索ワードに **virtual network** と入力し、表示される候補より **Virtual network** を選択
+
+  <img src="images/new-vnet-1.png" />
+
+- **作成** をクリック
+
+  <img src="images/new-vnet-2.png" />
+
+- 必要事項を設定し **次: IP アドレス >** をクリック
+
+  - **サブスクリプション**: ワークショップで使用しているサブスクリプション
+
+  - **リソース グループ**: 先の手順で作成した新しいリソース グループ
+
+  - **名前**: 任意（vnet-2 など）
+
+  - **地域**: (US) West US 3 が選択されていることを確認
+
+    <img src="images/new-vnet-3.png" />
+
+- IPv4 アドレス空間、サブネットを指定し **次: セキュリティ >** をクリック
+
+  - **IPv4 アドレス空間**: 任意（10.2.0.0/16）
+
+  - **サブネット名**: Subnet-1 / **サブネット アドレス範囲**: 任意（10.2.1.0/24）
+
+  - **サブネット名**: Subnet-2 / **サブネット アドレス範囲**: 任意（10.2.2.0/24）
+
+    <img src="images/new-vnet-4.png" />
+
+    ※ サブネットは **＋ サブネットの追加** をクリックし、必要事項を入力
+
+    <img src="images/new-vnet-5.png" />
+
+- セキュリティ設定は既定のまま **確認および作成** をクリック
+
+  <img src="images/new-vnet-6.png" />
+
+- **作成** をクリックし、指定した内容で仮想ネットワークを追加
+
+  <img src="images/new-vnet-7.png" />
 
 <br />
 
 **Web アプリの作成**
 
+- Azure ポータルのトップ画面で **＋ リソースの作成** をクリック
+
+- **Web アプリ** の **作成** をクリック
+
+  <img src="images/new-app-service-1.png" />
+
+- **基本** タブでアプリ名、ランタイム、App Service プラン等を設定し **次: デプロイ >** をクリック
+
+  - **サブスクリプション**: ワークショップで使用しているサブスクリプション
+
+  - **リソース グループ**: 先の手順で作成した新しいリソース グループ
+
+  - **インスタンスの詳細**
+
+    - **名前**: 任意 (app-workshop-xxx など、ユニークとなる名前)
+
+    - **公開**: コード
+
+    - **ランタイム スタック**: .NET 6 (LTS)
+
+    - **オペレーティング システム**: Windows
+
+    - **地域**: (US) West US 3 が選択されていることを確認
+
+  - **App Service プラン**
+
+    - **Windows プラン**: 新規作成をクリックしプラン名（plan-workshop-xx など）を入力
+
+      <img src="images/new-app-service-3.png" />
+
+    - **SKU とサイズ**: Standard S1
+
+      ※ Standard S1 が選択されていない場合は、**サイズを変更します** をクリックし S1 を選択
+
+      <img src="images/new-app-service-4.png" />
+
+  - **ゾーン冗長**: 無効
+
+  <img src="images/new-app-service-2.png" />
+
+- **デプロイ** タブは既定（無効化）のまま **次: ネットワーク (プレビュー) >** をクリック
+  
+  <img src="images/new-app-service-5.png" />
+
+- **ネットワーク (プレビュー)** タブでネットワーク インジェクションで **オフ** が設定されていることを確認
+
+  **次: 監視 >** をクリック 
+
+  <img src="images/new-app-service-6.png" />
+
+- **監視** タブで **Application Insights を有効にする** を **いいえ** に変更
+
+  **確認および作成** をクリック
+
+  <img src="images/new-app-service-7.png" />
+
+- **作成** をクリックし、指定した内容で Web アプリを展開
+
+  <img src="images/new-app-service-8.png" />
+
+※ Web アプリの展開完了後に主催者からアプリを配信します
+
 <br />
 
-### Task 2: Cosmos DB グローバル分散
+### Task 2: VNet Peering の構成
+
+- 新しく追加した仮想ネットワークの管理ブレードへ移動
+
+- **ピアリング** を選択し **＋ 追加** をクリック
+
+  <img src="images/vnet-peering-1.png" />
+
+- 双方向のピアリング名を入力し、既存の仮想ネットワークを選択したのち **追加** をクリック
+
+  <img src="images/vnet-peering-2.png" />
 
 <br />
 
-### Task 3: Cosmos DB Private Endpoint の追加
+### Task 3: Cosmos DB グローバル分散
+
+- Cosmos DB の管理ブレードで **データをグローバルにレプリケートする** を選択
+
+  <img src="images/replicate-db-1.png" />
+
+- **リージョンの追加** をクリック
+
+- 読み取りリージョンに **West US 3** を選択し **OK** をクリック
+
+  <img src="images/replicate-db-2.png" />
+
+- **保存** をクリック
+
+  <img src="images/replicate-db-3.png" />
+
+- **自動フェールオーバー** をクリック
+
+- **自動フェールオーバーの有効化** を **オン** に変更し **OK** をクリック
+
+  <img src="images/automatic-failover.png" />
+
+- **プライベート エンドポイント接続** を選択
+
+- 既存のプライベート エンドポイントをクリックし **DNS の構成** を選択
+
+  <img src="images/replicate-db-4.png" />
+
+  ※ 追加したリージョン用の IP アドレス、FQDN が作成されていることを確認
 
 <br />
 
-### Task 4: App Service の作成・構成
+### Task 4: Cosmos DB Private Endpoint の追加
+
+- Cosmos DB の管理ブレードから **プライベート エンドポイント接続** を選択
+
+- **＋ プライベート エンドポイント** をクリック
+
+- **基本** タブでサブスクリプション、リソース、名前、地域を指定
+
+  - **サブスクリプション**: ワークショップで使用しているサブスクリプション
+
+  - **リソース グループ**: ワークショップで使用しているリソース グループ
+
+  - **名前**: 任意（pl-cosmos-workshop-xxx など）
+
+  - **地域**: 仮想ネットワークが展開されている地域を選択
+
+    <img src="images/replicate-db-5.png" />
+
+- **リソース** タブでプライベート エンドポイントを作成するリソースを指定
+
+  - **サブスクリプション**: ワークショップで使用しているサブスクリプション
+
+  - **リソースの種類**: Microsoft.AzureCosmosDB/databaseAccounts
+
+  - **リソース**: ワークショップで使用している Cosmos DB アカウント
+
+  - **対象サブ リソース**: Sql
+
+    <img src="images/cosmos-private-endpoint-03.png" />
+
+- **仮想ネットワーク** タブでプライベート エンドポイントを作成する仮想ネットワーク、サブネットを選択
+
+  - **仮想ネットワーク**: West US 3 へ作成した仮想ネットワーク
+
+  - **サブネット**: Subnet-1 を選択
+
+    <img src="images/replicate-db-6.png" />
+
+- DNS の構成で追加したリソース グループに新規でプライベート DNS ゾーンが作成されることを確認
+
+  <img src="images/replicate-db-7.png" />
+
+- タグは既定のまま、プライベート エンドポイントを作成
+
+- 新たに追加したプライベート エンドポイントの DNS 構成を確認
+
+  <img src="images/replicate-db-8.png" />
+
+  ※ グローバル エンドポイントと Cosmos DB アカウントとレプリカ展開されているリージョン用の IP アドレス、FQDN が作成
 
 <br />
 
-### Task 5: Front Door 配信元グループへの App Service の追加
+### Task 5: App Service の構成
+
+**アプリケーション設定**
+
+- 新たに展開した App Service の管理ブレードから **構成** を選択
+
+- **＋ 新しいアプリケーション設定** をクリック
+
+  <img src="images/new-app-configuration-1.png" />
+
+- 名前、値を入力しのアプリケーション設定を追加
+
+  - **名前**: CosmosDbEndpoint
+  
+  - **値**: Cosmos DB アカウントの URI
+
+    <img src="images/new-app-configuration-2.png" />
+
+- 同様の手順で２つアプリケーション設定を追加
+
+  - **名前**: AuthorizationKey　/　**値**: Cosmos DB アカウントのプライマリ キー
+
+  - **名前**: ServerRegion　/　**値**: WestUS3
+
+- **保存** をクリック
+
+  <img src="images/new-app-configuration-3.png" />
+
+- 再起動を行うメッセージが表示されるので **続行** をクリック
+
+  <img src="images/new-app-configuration-4.png" />
 
 <br />
+
+**App Service の VNet 統合**
+
+- 新たに展開した App Service の管理ブレードから **ネットワーク** を選択
+
+- **VNET 統合** をクリック
+
+  <img src="images/app-vnet-integration-01.png" />
+
+- **＋ VNet の追加** をクリック
+
+  <img src="images/app-vnet-integration-03.png" />
+
+- West US 3 へ作成した仮想ネットワークとその Subnet-2 を選択
+
+- 選択した仮想ネットワークが追加されることを確認
+
+  <img src="images/new-app-configuration-5.png" />
+
+<br />
+
+**Application Insights の追加**
+
+- 新たに展開した App Service の管理ブレードの **Application Insights** を選択
+
+- **Application Insights を有効にする** をクリック
+
+  <img src="images/add-application-insights-1.png" />
+
+- 新しいリソースの設定を行い **適用** をクリック
+
+  - **新しいリソースの名前**: 任意 (appi-workshop-xxx など)
+
+  - **場所**: West US 3
+
+  - **Log Analytics ワークスペース**: ワークショップで使用している Log Analytics ワークスペースを選択
+
+    <img src="images/add-application-insights-2.png" />
+
+<br />
+
+**アプリケーションの動作確認**
+
+- 新たに展開した App Service の管理ブレードの概要タブで URL をクリックしアプリケーションへアクセスを実行
+
+  <img src="images/new-app-configuration-6.png" />
+
+  ※ 正常にアプリケーションが動作することを確認
+
+- App Service の管理ブレードで **Application Insights** を選択
+
+- **Application Insights データの表示** をクリック
+
+  <img src="images/add-application-insights-3.png" />
+
+- **パフォーマンス** を選択
+
+  ※ アプリケーションの各操作の数や平均実行時間が表示
+
+- **操作の選択** から **GET /** を選択、**詳細の表示 ...** にある **サンプル** ボタンをクリック
+
+  <img src="images/add-application-insights-4.png" />
+
+- 画面右に表示される **操作のサンプルを選択** ペインから応答コード 200 の任意の項目をクリック
+
+- エンド ツー エンド トランザクションの詳細画面で Cosmos DB への接続を確認
+
+  <img src="images/add-application-insights-5.png" />
+
+<br />
+
+### Task 6: Front Door 配信元グループへの App Service の追加
+
+**配信元グループの更新**
+
+- Front Door の管理ブレードから **配信元グループ** を選択
+
+- 先の手順で追加した配信元グループをクリック
+
+  <img src="images/add-origin-1.png" />
+
+- **＋ 配信元の追加** をクリック
+
+  <img src="images/add-origin-2.png" />
+
+- 配信元として新たに展開した App Service を選択、優先順位を 2 に設定し **追加** をクリック
+
+  - **名前**: 任意（WebApp2 など）
+
+  - **配信元の種類**: App Services
+
+  - **ホスト名**: 新たに展開した App Service を展開
+
+  - **HTTP ポート**: 80
+
+  - **HTTPS ポート**: 443
+
+  - **優先順位**: 2
+
+  - **重み**: 1000
+
+  - **プライベート リンク**: プライベート リンク サービスを有効にするにチェック
+
+  - **Region**: (US) West US 3
+
+  - **ターゲット サブ リソース**: sites
+
+  - **要求メッセージ**: 任意（Private link service from AFD など）
+
+  - **状態**: この元を有効にするにチェック
+
+    <img src="images/add-origin-3.png" />
+
+- 配信元のホスト名に App Service が追加されたことを確認し **更新** をクリック
+
+  <img src="images/add-origin-4.png" />
+
+<br />
+
+**App Service のプライベート エンドポイントの承認**
+
+- App Service の管理ブレードから **ネットワーク** を選択
+
+- **プライベート エンドポイント** をクリック
+
+- Front Door の配信元グループへの追加時に設定したプライベート エンドポイントが作成されているため、選択し **承認** をクリック
+
+  <img src="images/new-app-configuration-7.png" />
+
+- 確認のメッセージが表示されるため **はい** をクリック
+
+- 接続状態が Approved に変更されることを確認
+
+  <img src="images/new-app-configuration-8.png" />
+
+- 受信トラフィックのプライベート エンドポイント、送信トラフィックの VNET 統合がオンになっていることを確認
+
+  <img src="images/new-app-configuration-9.png" />
+
+- 管理ブレードの概要タブから URL をクリック
+
+- プライベート エンドポイントの有効化によりインターネットからのアクセスが拒否されることを確認
+
+  <img src="images/error-403-forbidden.png" />
+
+<br />
+
+**アプリケーションの動作確認**
+
+- Front Door の管理ブレードで **概要** を表示
+
+- Endpoint hostname をコピーし、新しいタブでアプリケーションにアクセス
+
+  <img src="images/confirm-web-app-1.png" />
+
+  ※ Front Door 経由ではインターネットでアプリケーションへアクセス可であることを確認
+
+- 既存の App Service の管理ブレードの概要ページを表示
+
+- 画面上部の **停止** をクリック
+
+  <img src="images/failover-app-1.png" />
+
+- 停止を確認するメッセージが表示されるため **はい** をクリック
+
+  <img src="images/failover-app-2.png" />
+
+- アプリケーションが停止されたことを確認
+
+  <img src="images/failover-app-3.png" />
+
+- Front Door の Endpoint hostname でアプリケーションへアクセス
+
+  <img src="images/failover-app-4.png" />
+
+  ※ アプリケーションへ正常にアクセスできることを確認
+
+- Application Insights で新たな App Service へリクエストが行われていることを確認
+
+  <img src="images/failover-app-5.png" />
+
