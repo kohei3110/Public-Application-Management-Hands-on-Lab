@@ -7,7 +7,7 @@ June 2022
 
 ### **Contents**
 
-- [Advance preparatio: アプリケーションの動作確認](#advance-preparatio-アプリケーションの動作確認)
+- [Advance Preparation: アプリケーションの動作確認](#advance-preparation-アプリケーションの動作確認)
 
 - [Exercise 1: Azure リソースの保護](#exercise-1-azure-リソースの保護)
 
@@ -49,7 +49,7 @@ June 2022
 
 <br />
 
-## Advance preparatio: アプリケーションの動作確認
+## Advance Preparation: アプリケーションの動作確認
 
 - App Service の **概要** ページの **URL** をクリック
 
@@ -631,7 +631,7 @@ June 2022
 
   - **リソース グループ**: 任意（rg-worksohp-xx など）
 
-  - **リージョン**: (US) West US 3 を選択
+  - **リージョン**: (US) West US を選択
 
     <img src="images/create-resource-group-3.png" />
 
@@ -661,7 +661,7 @@ June 2022
 
   - **名前**: 任意（vnet-2 など）
 
-  - **地域**: (US) West US 3 が選択されていることを確認
+  - **地域**: (US) West US が選択されていることを確認
 
     <img src="images/new-vnet-3.png" />
 
@@ -713,7 +713,7 @@ June 2022
 
     - **オペレーティング システム**: Windows
 
-    - **地域**: (US) West US 3 が選択されていることを確認
+    - **地域**: (US) West US が選択されていることを確認
 
   - **App Service プラン**
 
@@ -777,7 +777,7 @@ June 2022
 
 - **リージョンの追加** をクリック
 
-- 読み取りリージョンに **West US 3** を選択し **OK** をクリック
+- 読み取りリージョンに **West US** を選択し **OK** をクリック
 
   <img src="images/replicate-db-2.png" />
 
@@ -833,7 +833,7 @@ June 2022
 
 - **仮想ネットワーク** タブでプライベート エンドポイントを作成する仮想ネットワーク、サブネットを選択
 
-  - **仮想ネットワーク**: West US 3 へ作成した仮想ネットワーク
+  - **仮想ネットワーク**: West US へ作成した仮想ネットワーク
 
   - **サブネット**: Subnet-1 を選択
 
@@ -875,7 +875,7 @@ June 2022
 
   - **名前**: AuthorizationKey　/　**値**: Cosmos DB アカウントのプライマリ キー
 
-  - **名前**: ServerRegion　/　**値**: WestUS3
+  - **名前**: ServerRegion　/　**値**: WestUS
 
 - **保存** をクリック
 
@@ -899,7 +899,7 @@ June 2022
 
   <img src="images/app-vnet-integration-03.png" />
 
-- West US 3 へ作成した仮想ネットワークとその Subnet-2 を選択
+- West US へ作成した仮想ネットワークとその Subnet-2 を選択
 
 - 選択した仮想ネットワークが追加されることを確認
 
@@ -919,7 +919,7 @@ June 2022
 
   - **新しいリソースの名前**: 任意 (appi-workshop-xxx など)
 
-  - **場所**: West US 3
+  - **場所**: West US
 
   - **Log Analytics ワークスペース**: ワークショップで使用している Log Analytics ワークスペースを選択
 
@@ -989,7 +989,7 @@ June 2022
 
   - **プライベート リンク**: プライベート リンク サービスを有効にするにチェック
 
-  - **Region**: (US) West US 3
+  - **Region**: (US) West US
 
   - **ターゲット サブ リソース**: sites
 
