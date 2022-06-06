@@ -11,9 +11,14 @@ June 2022
 
 <br />
 
-## リソースの展開
+## Exercise 5: Chaos Studio を使った実験
 
-## Exercise ★: Chaos Studio を使った実験 (ToDo: エクササイズ番号を後で入れる)
+- [Exercise 5: Chaos Studio を使った実験](#exercise-5--chaos-studio-------)
+  * [Task 1: ターゲット(Cosmos DB)のオンボード](#task-1--------cosmos-db-------)
+  * [Task 2: 実験作成](#task-2------)
+  * [Task 3: マネージド ID への権限付与](#task-3--------id-------)
+  * [Task 4: 実験実行](#task-4------)
+  * [Task 5: 実験結果確認](#task-5--------)
 
 ### Task 1: ターゲット(Cosmos DB)のオンボード
 
