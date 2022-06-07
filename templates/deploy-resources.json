@@ -93,12 +93,6 @@
                         "properties": {
                             "addressPrefix": "[parameters('subnetPrefix2')]"
                         }
-                    },
-                    {
-                        "name": "AzureBastionSubnet",
-                        "properties": {
-                            "addressPrefix": "10.1.10.0/24"
-                        }
                     }
                 ]
             }
