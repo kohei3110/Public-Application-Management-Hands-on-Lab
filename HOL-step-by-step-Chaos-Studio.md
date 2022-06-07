@@ -88,7 +88,7 @@ June 2022
 
         - Duration (minutes): **10**
 
-        - readRegion: **West US**
+        - readRegion: **Japan East**
 
 　<img src="images/chaos-studio-8.png" />
 
@@ -142,9 +142,9 @@ June 2022
 
 　<img src="images/chaos-studio-12.png" />
 
-- **データをグローバルにレプリケートする**を選択し、読み取りリージョンに**West US**を追加し、**保存**をクリック
+- **データをグローバルにレプリケートする**を選択し、読み取りリージョンに**Japan East**が追加されていることを確認
 
-　<img src="images/chaos-studio-19.png" />
+<img src="images/replicate-db-3.png" />
 
 
 ### Task 4: 実験実行
@@ -181,6 +181,6 @@ June 2022
 
 　<img src="images/chaos-studio-21.png" />
 
-- **locationName** が **West US** に変更されていることを確認
+- **locationName** が **Japan East** に変更されていることを確認
 
 　<img src="images/chaos-studio-22.png" />
