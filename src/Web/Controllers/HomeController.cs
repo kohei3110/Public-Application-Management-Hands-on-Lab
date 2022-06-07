@@ -29,9 +29,9 @@ public class HomeController : Controller
             CosmosClientOptions options = new CosmosClientOptions();
             options.ApplicationName = "App-Workshop";
 
-            if (serverRegion == "WestUS")
+            if (serverRegion == "JapanEast")
             {
-                options.ApplicationRegion = Regions.WestUS;
+                options.ApplicationRegion = Regions.JapanEast;
             }
             else if (serverRegion == "EastUS")
             {

@@ -204,6 +204,8 @@ June 2022
 
   - **名前**: 任意（pl-cosmos-workshop-xxx など）
 
+  - **Network Interface Name**: 任意（既定のままで OK）
+
   - **地域**: 仮想ネットワークが展開されている地域を選択
 
     <img src="images/cosmos-private-endpoint-02.png" />
@@ -631,7 +633,7 @@ June 2022
 
   - **リソース グループ**: 任意（rg-worksohp-xx など）
 
-  - **リージョン**: (US) West US を選択
+  - **リージョン**: Japan East を選択
 
     <img src="images/create-resource-group-3.png" />
 
@@ -661,7 +663,7 @@ June 2022
 
   - **名前**: 任意（vnet-2 など）
 
-  - **地域**: (US) West US が選択されていることを確認
+  - **地域**: (Asia Pacific) Japan East が選択されていることを確認
 
     <img src="images/new-vnet-3.png" />
 
@@ -713,7 +715,7 @@ June 2022
 
     - **オペレーティング システム**: Windows
 
-    - **地域**: (US) West US が選択されていることを確認
+    - **地域**: (Asia Pacific) Japan East が選択されていることを確認
 
   - **App Service プラン**
 
@@ -777,7 +779,7 @@ June 2022
 
 - **リージョンの追加** をクリック
 
-- 読み取りリージョンに **West US** を選択し **OK** をクリック
+- 読み取りリージョンに **Japan East** を選択し **OK** をクリック
 
   <img src="images/replicate-db-2.png" />
 
@@ -833,7 +835,7 @@ June 2022
 
 - **仮想ネットワーク** タブでプライベート エンドポイントを作成する仮想ネットワーク、サブネットを選択
 
-  - **仮想ネットワーク**: West US へ作成した仮想ネットワーク
+  - **仮想ネットワーク**: Japan East へ作成した仮想ネットワーク
 
   - **サブネット**: Subnet-1 を選択
 
@@ -871,11 +873,13 @@ June 2022
 
     <img src="images/new-app-configuration-2.png" />
 
-- 同様の手順で２つアプリケーション設定を追加
+- 同様の手順で３つアプリケーション設定を追加
 
   - **名前**: AuthorizationKey　/　**値**: Cosmos DB アカウントのプライマリ キー
 
-  - **名前**: ServerRegion　/　**値**: WestUS
+  - **名前**: WEBSITE_VNET_ROUTE_ALL　/　**値**: 1
+
+  - **名前**: ServerRegion　/　**値**: JapanEast
 
 - **保存** をクリック
 
@@ -899,7 +903,7 @@ June 2022
 
   <img src="images/app-vnet-integration-03.png" />
 
-- West US へ作成した仮想ネットワークとその Subnet-2 を選択
+- Japan East へ作成した仮想ネットワークとその Subnet-2 を選択
 
 - 選択した仮想ネットワークが追加されることを確認
 
@@ -919,7 +923,7 @@ June 2022
 
   - **新しいリソースの名前**: 任意 (appi-workshop-xxx など)
 
-  - **場所**: West US
+  - **場所**: (Asia Pacific) Japan East
 
   - **Log Analytics ワークスペース**: ワークショップで使用している Log Analytics ワークスペースを選択
 
@@ -989,7 +993,7 @@ June 2022
 
   - **プライベート リンク**: プライベート リンク サービスを有効にするにチェック
 
-  - **Region**: (US) West US
+  - **Region**: Japan East
 
   - **ターゲット サブ リソース**: sites
 
