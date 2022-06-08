@@ -817,7 +817,9 @@ June 2022
 
   - **名前**: 任意（pl-cosmos-workshop-xxx など）
 
-  - **地域**: 仮想ネットワークが展開されている地域を選択
+  - **Network Interface Name**: 任意（既定のままで OK）
+
+  - **地域**: 新しく作成した仮想ネットワークの地域を選択
 
     <img src="images/replicate-db-5.png" />
 

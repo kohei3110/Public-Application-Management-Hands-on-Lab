@@ -123,8 +123,10 @@ June 2022
   - Azure ポータルから Cloud Shell を起動しサービス プリンシパルを作成
 
     ```
-    az ad sp create-for-rbac --name "<service principal name>" --role contributor --sdk-auth
+    az ad sp create-for-rbac --name "<service principal name>" --role contributor --scopes /subscriptions/<subscription id> --sdk-auth
     ```
+
+    ※ <subscription id> には作成先のサブスクリプション ID を指定
 
     ※ サブスクリプションに対する共同作成者の権限を付与
 
