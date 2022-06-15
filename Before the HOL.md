@@ -123,8 +123,10 @@ June 2022
   - Azure ポータルから Cloud Shell を起動しサービス プリンシパルを作成
 
     ```
-    az ad sp create-for-rbac --name "<service principal name>" --role contributor --sdk-auth
+    az ad sp create-for-rbac --name "<service principal name>" --role contributor --scopes /subscriptions/<subscription id> --sdk-auth
     ```
+
+    ※ subscription id には作成先のサブスクリプション ID を指定
 
     ※ サブスクリプションに対する共同作成者の権限を付与
 
@@ -210,14 +212,4 @@ June 2022
 
       <br />
 
-    - 他サイトの情報を埋め込み
-
-      ```
-      ' --<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/771984076&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
-      ```
-
-      <img src="images/web-app-3.png" />
-
-      <br />
-
-    ※ XSS 攻撃が成功し、JavaScript の実行や他サイトの情報が表示されることを確認
+    ※ XSS 攻撃が成功し、JavaScript が実行されることを確認
